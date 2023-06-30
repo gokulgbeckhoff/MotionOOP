@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="OOPSOld" Id="{d06acfa9-1fb7-43ed-af47-93c6f2d0cf54}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM OOPSOld
+VAR
+	testAxis : MotionAxisO;
+	AxisEnable: BOOL;
+	AxisDisable: BOOL;
+	state: BOOL;
+	erroID:UDINT;
+	pos:LREAL;
+	vel:LREAL;
+	JogFwd: BOOL;
+	JogRev:BOOL;
+	modess: E_JogMode;
+	testconfig: AxisConfigurationO;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//Test Axis Config
+testAxis.configure(stAxisConfig:=testconfig);
+
+//Enable
+IF AxisEnable THEN
+	testAxis.Enable();
+END_IF
+
+IF AxisDisable THEN
+	testAxis.Disable();
+END_IF
+
+//Jog Method 
+testAxis.Jog(JogFrw:=JogFwd,JogRev:=JogRev);
+
+
+//
+state := testAxis.AxisState;
+erroID:=testAxis.ErrorID;
+pos:=testAxis.ActualPosition;
+vel:=testAxis.ActualSpeed;
+]]></ST>
+    </Implementation>
+    <LineIds Name="OOPSOld">
+      <LineId Id="18" Count="20" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
