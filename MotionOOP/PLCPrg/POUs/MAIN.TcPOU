@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MAIN" Id="{75d8bf51-bd76-434e-a119-eb5787d14104}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	testAxis : MotionAxisO;
+
+	AxisEnable: BOOL;
+	AxisDisable: BOOL;
+	state: BOOL;
+	erroID:UDINT;
+	pos:LREAL;
+	vel:LREAL;
+	JogFwd: BOOL;
+	JogRev:BOOL;
+	modess: E_JogMode;
+	testconfig: AxisConfigurationO;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//Test Axis Config
+testAxis.configure(stAxisConfig:=testconfig);
+
+//Enable
+IF AxisEnable THEN
+	testAxis.Enable();
+END_IF
+
+IF AxisDisable THEN
+	testAxis.Disable();
+END_IF
+
+//Jog Method 
+testAxis.Jog(JogFrw:=JogFwd,JogRev:=JogRev);
+
+
+//
+state := testAxis.AxisState;
+erroID:=testAxis.ErrorID;
+pos:=testAxis.ActualPosition;
+vel:=testAxis.ActualSpeed;
+]]></ST>
+    </Implementation>
+    <LineIds Name="MAIN">
+      <LineId Id="60" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="7" Count="1" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="17" Count="1" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="24" Count="2" />
+      <LineId Id="23" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

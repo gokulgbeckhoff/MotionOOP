@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Refactors>
+  <Renames>
+    <RenamedType>
+      <Type guid="19db341e-fc71-46b7-b0c8-08a76e95a902">CONSTANTS_1</Type>
+      <From>Constants_1</From>
+      <To>AxisConstants</To>
+    </RenamedType>
+    <RenamedType>
+      <Type guid="764d4eba-8ab3-4f76-a269-e2013baee3bc">ITFAXIS_1</Type>
+      <From>itfAxis_1</From>
+      <To>itfAxis</To>
+    </RenamedType>
+    <RenamedType>
+      <Type guid="db6f6740-7b00-4da6-90ee-f7e0c9ebdd03">AXISCONFIGURATION</Type>
+      <From>AxisConfiguration</From>
+      <To>AxisConfigurationO</To>
+    </RenamedType>
+    <RenamedType>
+      <Type guid="6efac28a-a867-4ac1-8d79-383fd5b163f6">MOTIONAXIS</Type>
+      <From>MotionAxis</From>
+      <To>MotionAxisO</To>
+    </RenamedType>
+  </Renames>
+</Refactors>

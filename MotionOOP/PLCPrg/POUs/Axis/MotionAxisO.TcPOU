@@ -1,0 +1,298 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MotionAxisO" Id="{6efac28a-a867-4ac1-8d79-383fd5b163f6}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK MotionAxisO
+VAR
+	(* Axis Reference *)
+	axisRef : AXIS_REF; 
+	
+	(* Motion Function Block *)
+	fbMcPower 		: MC_Power;				// FB for enable and override
+	fbMcReset 		: MC_Reset;				// FB to reset axis
+	fbMcStop 		: MC_Stop;				// FB to stop axis
+	fbMcHalt		: MC_Halt;				// FB to halt axis
+	fbMcMoveAbsolute: MC_MoveAbsolute;		// FB to move axis (Absolute Move)
+	fbMcMoveRelative: MC_MoveRelative;		// FB to move axis (Relative Move)
+	fbMcJog         : MC_Jog;				// FB to move axis (Relative Move)
+	
+	(* Axis Config Settings *)
+	axisConfig : AxisConfigurationO;
+	
+	(* Axis Status *)
+	axisStatus : BOOL;
+	blockError : BOOL;
+	nErrorID	   : UDINT;
+
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="AbsoluteMove" Id="{c3451ace-de85-4b3d-85a3-1bb2311490ba}">
+      <Declaration><![CDATA[METHOD AbsoluteMove : BOOL
+VAR_INPUT
+	TargetPosition : LREAL;
+END_VAR
+
+VAR
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="ActualPosition" Id="{b53e2779-5fd6-4938-833e-613ccdf9545b}">
+      <Declaration><![CDATA[PROPERTY ActualPosition : LReal]]></Declaration>
+      <Get Name="Get" Id="{186b8ccb-2b3b-4cae-8cee-7170028d065c}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ActualPosition := axisRef.NcToPlc.ActPos;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="ActualSpeed" Id="{a120a2d9-432c-4e75-ae40-182a022fe029}">
+      <Declaration><![CDATA[PROPERTY ActualSpeed : LReal]]></Declaration>
+      <Get Name="Get" Id="{3de0044e-9dac-4dce-a533-695a02650e46}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ActualSpeed := axisRef.NcToPlc.ActVelo;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="AxisState" Id="{dee10592-fb1a-458c-b8d9-450e0e9a9721}">
+      <Declaration><![CDATA[PROPERTY AxisState : BOOL]]></Declaration>
+      <Get Name="Get" Id="{a4ce2992-626b-43c0-9473-a8c49978d3ed}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[AxisState:= axisRef.NcToPlc.StateDWord.0 AND axisStatus ;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="configure" Id="{05b83e6f-6c9d-482c-87c5-d51b21ad4cdc}">
+      <Declaration><![CDATA[METHOD configure :BOOL;
+VAR_INPUT
+	stAxisConfig : AxisConfigurationO;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[axisConfig := stAxisConfig;
+
+//Not Implemented
+configure:=TRUE;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Disable" Id="{cdc7a590-792f-495b-82e0-a680f5fc044e}">
+      <Declaration><![CDATA[METHOD Disable : BOOL
+VAR
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Disable := mcPower(enable:=FALSE);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Enable" Id="{b3550f0a-fa67-4c80-947d-d090edf7c896}">
+      <Declaration><![CDATA[METHOD Enable : BOOL
+VAR
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Enable := mcPower(enable:=TRUE);
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Error" Id="{557a2853-1fb5-40b5-8793-ea3e16bdc4b0}">
+      <Declaration><![CDATA[PROPERTY Error : Bool]]></Declaration>
+      <Get Name="Get" Id="{1686439e-d75c-4357-bde7-a1f797103e23}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Error := axisRef.NcToPlc.StateDWord.31 OR blockError;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="ErrorID" Id="{dcfddad3-85dc-4a25-b1e7-e9c8b2439f63}">
+      <Declaration><![CDATA[PROPERTY ErrorID : UDINT]]></Declaration>
+      <Get Name="Get" Id="{974c0fe1-5ff3-4882-9d23-7536fa5d4618}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ErrorID := nErrorID;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="Jog" Id="{6cea3643-adb1-4590-ade4-876e97b45011}">
+      <Declaration><![CDATA[METHOD Jog : BOOL;
+VAR_INPUT
+	JogFrw : BOOL;
+	JogRev : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Jog := mcJog(jogFrw:=JogFrw,jogRev:=JogRev);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="mcJog" Id="{67145e7d-43ee-4162-be9f-bb2cfc9fa1ce}">
+      <Declaration><![CDATA[METHOD INTERNAL mcJog : BOOL
+VAR_INPUT
+	jogFrw : BOOL;
+	jogRev : BOOL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[(* Jog Frw/Rev *)
+fbMcJog(
+		Axis:=axisRef, 
+		JogForward:=jogFrw, 
+		JogBackwards:=jogRev, 
+		Mode:=axisConfig.JogMode, 
+		Position:=axisConfig.JogInchingPosition, 
+		Velocity:=axisConfig.JogVelocity, 
+		Acceleration:=axisConfig.JogAccleration, 
+		Deceleration:=axisConfig.JogDeaccleration);
+		
+(* Error Handling *)
+IF fbMcJog.Error THEN
+	blockError:= TRUE;
+	nErrorID := fbMcJog.ErrorID;
+END_IF
+
+(* Jog State *)
+mcJog := fbMcJog.Active;		]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="mcMoveAbs" Id="{53fe8ef5-1ece-4d4f-9cac-020d395096eb}">
+      <Declaration><![CDATA[METHOD mcMoveAbs : BOOL
+VAR_INPUT
+	TargetPosition : LREAL;
+END_VAR
+
+VAR
+	previousTargetPosition : LREAL;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[(* Absloute Move *)
+IF TargetPosition <> previousTargetPosition THEN
+	
+END_IF
+
+(* Absloute Move Block *)
+fbMcMoveAbsolute(
+				Axis:= axisRef, 
+				Execute:= , 
+				Position:= , 
+				Velocity:= , 
+				Acceleration:= , 
+				Deceleration:= , 
+				Jerk:= , 
+				BufferMode:= , 
+				Options:= , 
+				Done=> , 
+				Busy=> , 
+				Active=> , 
+				CommandAborted=> , 
+				Error=> , 
+				ErrorID=> );
+		
+(* Error Handling *)
+IF fbMcMoveAbsolute.Error THEN
+	blockError:= TRUE;
+	nErrorID := fbMcMoveAbsolute.ErrorID;
+END_IF
+
+(* Absolute Move Complete *)
+mcMoveAbs := fbMcMoveAbsolute.Done AND NOT fbMcMoveAbsolute.Busy ;		]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="mcPower" Id="{09f11a1e-6091-410a-b73b-ed1a52c5c7e7}">
+      <Declaration><![CDATA[METHOD INTERNAL mcPower : BOOL
+VAR_INPUT
+	enable : BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[(* Axis Enable/Disable *)
+fbMCPower(Enable 			:= enable, 
+		  Enable_Positive	:= axisConfig.EnablePositive, 
+		  Enable_Negative	:= axisConfig.EnableNegative, 
+		  Override		    := axisConfig.Override,
+	      Axis			    := axisRef);
+
+(* Error Handling *)
+IF fbMcPower.Error THEN
+	blockError:= TRUE;
+	nErrorID := fbMcPower.ErrorID;
+END_IF
+
+(* Axis State *)
+mcPower := axisStatus := fbMCPower.Status;
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="MotionAxisO">
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="MotionAxisO.AbsoluteMove">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="MotionAxisO.ActualPosition.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="MotionAxisO.ActualSpeed.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="MotionAxisO.AxisState.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="MotionAxisO.configure">
+      <LineId Id="5" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+    <LineIds Name="MotionAxisO.Disable">
+      <LineId Id="29" Count="0" />
+      <LineId Id="19" Count="0" />
+    </LineIds>
+    <LineIds Name="MotionAxisO.Enable">
+      <LineId Id="29" Count="0" />
+      <LineId Id="19" Count="0" />
+    </LineIds>
+    <LineIds Name="MotionAxisO.Error.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="MotionAxisO.ErrorID.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="MotionAxisO.Jog">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="MotionAxisO.mcJog">
+      <LineId Id="28" Count="0" />
+      <LineId Id="9" Count="8" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="29" Count="6" />
+      <LineId Id="27" Count="0" />
+    </LineIds>
+    <LineIds Name="MotionAxisO.mcMoveAbs">
+      <LineId Id="45" Count="29" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="MotionAxisO.mcPower">
+      <LineId Id="38" Count="10" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

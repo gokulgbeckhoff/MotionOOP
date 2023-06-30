@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="AxisConfigurationO" Id="{db6f6740-7b00-4da6-90ee-f7e0c9ebdd03}">
+    <Declaration><![CDATA[TYPE AxisConfigurationO :
+STRUCT
+	(* Axis Enable Setting *)
+	Override : REAL := 100.0;
+	EnablePositive : BOOL:=TRUE;
+	EnableNegative : BOOL:=TRUE;
+	
+	(* Jog Setting *)
+	JogMode : E_JogMode:=E_JogMode.MC_JOGMODE_INCHING;
+	JogInchingPosition : LREAL:=10.0;
+	JogVelocity : LREAL:=100.0;
+	JogAccleration : LREAL:=1000.0;
+	JogDeaccleration : LREAL:=1000.0;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
